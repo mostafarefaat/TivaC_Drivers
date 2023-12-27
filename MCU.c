@@ -8,6 +8,8 @@ uint8_t SYS_TICK_INT_SERVED = 0;
 static STR_RELOAD_TYPE reload_value = 0;
 static STR_CONTROL_TYPE clk_source = 0;
 static STR_CONTROL_TYPE interrupt_config = 0;
+
+cb_type CallBack_Ptr_mcu = NULL;
 /*-----------GLOBAL EXTERN VARIABLES-----------*/
 
 /*-----------APIs IMPLEMENTATION-----------*/
@@ -30,7 +32,6 @@ void Sys_Timer_init(const Clk_user_Config *clk_config_Ptr)
 	{
 		Dio_Write_Pin(&(STCTRL), CLK_SRC_PIN, HIGH);
 	}
-	
 	/*2. INTERRUPT ENABLE OR DISABLE*/
 	if(interrupt_config == INTERRUPT_ON)
 	{
@@ -218,6 +219,22 @@ void Module_Clk_Deinit(MODULE_TYPE module)
 		case Timer_5_module_32_64: RCGCWTIMER &= ~(1<<PIN5);
 		break;
 		
-	}	
+	}
 	
+}
+	
+void register_systick_cb(cb_type Ptr)
+{
+	if(NULL != Ptr)
+	{
+		CallBack_Ptr_mcu = Ptr;
+	}	
+}
+void SysTick_Handler(void)
+{
+	if(NULL != CallBack_Ptr_mcu)
+	{
+		CallBack_Ptr_mcu();
+	}
+
 }

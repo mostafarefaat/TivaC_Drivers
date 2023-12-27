@@ -4,7 +4,7 @@
 /*-----------LOCAL MACROS-----------*/
 
 /*-----------GLOBAL STATIC VARIABLES-----------*/
-
+cb_type CallBack_Ptr_gpio = NULL;
 /*-----------GLOBAL EXTERN VARIABLES-----------*/
 
 /*-----------APIs IMPLEMENTATION-----------*/
@@ -130,5 +130,21 @@ void Port_Init(const Port_ConfigType *Config_Ptr)
 				/*NULL POINTER ERROR*/  /*TODO: RETURN AN INT TO SPECIFY IF ERROR HAPPENED OR NOT*/
 	}
 	
+}
+
+
+void register_gpio_cb(cb_type Ptr)
+{
+	if(NULL != Ptr)
+	{
+		CallBack_Ptr_gpio = Ptr;
+	}	
+}
+void GPIOF_Handler(void)
+{
+	if(NULL != CallBack_Ptr_gpio)
+	{
+		CallBack_Ptr_gpio();
+	}
 }
 

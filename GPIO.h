@@ -14,6 +14,8 @@ typedef uint8_t Port_PinInternalAttachType;
 typedef uint8_t Port_PinOutputCurrentType;
 typedef uint8_t Port_Num;
 typedef uint8_t Port_PinNum;
+
+
 /*-----------INCLUDES-----------*/
 
 /*-----------LOCAL MACROS-----------*/
@@ -125,7 +127,13 @@ typedef struct
 /*-----------GLOBAL EXTERN VARIABLES-----------*/
 
 /*-----------APIs IMPLEMENTATION-----------*/
+
+
 void Port_Init(const Port_ConfigType *Config_Ptr);
+
+void register_gpio_cb(cb_type Ptr);
+
+void GPIOF_Handler(void);
 
 #endif
 

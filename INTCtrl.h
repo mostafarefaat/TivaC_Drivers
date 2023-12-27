@@ -43,9 +43,12 @@ typedef uint8_t IntCtrl_InterruptType;
 
 #define INT_WDT										18
 #define INT_GPIOPORTF 						30
+#define Timer_0_A									19
+#define Timer_0_B									20
 #define Timer_1_A									21
 #define Timer_1_B									22
 
+#define WTIMER_1_B								97
 #define WTIMER_2_B								99
 
 #define FALLING_LOW			0

@@ -14,7 +14,7 @@ typedef uint8_t 		MODULE_TYPE;
 #define CURRENT_VALUE_RESET		0X00000000
 #define SYS_TIMER_MAX_VALUE		16777215
 #define SYS_TIMER_1sec_VALUE	16000000
-#define	PIOSC									0
+#define	PIOSC									16000000.0
 #define	SYSTEM_CLK						1
 #define	INTERRUPT_ON					1
 #define	INTERRUPT_OFF					0
@@ -78,6 +78,10 @@ void Sys_Timer_delay_1sec(uint32_t ticks );
 void Sys_Timer_delay(void);
 void Module_Clk_init(MODULE_TYPE module);
 void Module_Clk_Deinit(MODULE_TYPE module);
+ 
+void register_systick_cb(cb_type Ptr);
+
+void SysTick_Handler(void);
 
 //STR_RELOAD_TYPE reload_value_hex, STR_CONTROL_TYPE clk_source, STR_CONTROL_TYPE interrupt_config
 

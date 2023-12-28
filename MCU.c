@@ -16,7 +16,6 @@ cb_type CallBack_Ptr_mcu = NULL;
 
 void Sys_Timer_init(const Clk_user_Config *clk_config_Ptr)
 {
-	reload_value = clk_config_Ptr->STR_Load_Value;
 	
 	clk_source =  clk_config_Ptr->Clk_Souce;
 	
@@ -42,22 +41,8 @@ void Sys_Timer_init(const Clk_user_Config *clk_config_Ptr)
 	{
 		Dio_Write_Pin(&(STCTRL), INTEN_PIN, LOW);
 	}
-	/*3. DELAY FUNCTION*/
-	if(reload_value > SYS_TIMER_MAX_VALUE)
-	{
-	Sys_Timer_delay();
-	}
-	else 
-	{
-		/*1.SET RELOAD VALUE IN STRELOAD REGISTER*/				
-		Dio_Write_Port(&(STRELOAD), reload_value-1);
 	
-		/*2.RESET CURRENT VALUE IN STCURRENT REGISTER AND TO CLEAR COUNT FLAG*/
-		Dio_Write_Port(&(STCURRENT), CURRENT_VALUE_RESET);
-	
-		/*4. ENABLE THE SYS_TIMER*/
-		Dio_Write_Pin(&(STCTRL), EN_PIN, HIGH);
-	}
+  Dio_Write_Pin(&(STCTRL), EN_PIN, HIGH);
 }
 
 void Sys_Timer_delay_1sec(uint32_t ticks)
@@ -72,21 +57,17 @@ void Sys_Timer_delay_1sec(uint32_t ticks)
 		/*4. ENABLE THE SYS_TIMER*/
 		Dio_Write_Pin(&(STCTRL), EN_PIN, HIGH);
 		
-		while((Dio_Read_Pin(&(STCTRL),PIN16))==0)		
-		{
-			if(SYS_TICK_INT_SERVED)
-			{
-				SYS_TICK_INT_SERVED = 0;
-				break;
-			}
-		}
+		while((Dio_Read_Pin(&(STCTRL),PIN16))== 0 && (SYS_TICK_INT_SERVED == 0) )	{}
+		SYS_TICK_INT_SERVED = 0;
 }
 
-void Sys_Timer_delay(void)
+void Sys_Timer_delay(uint32_t ticks)
 {
+	if(ticks > SYS_TIMER_MAX_VALUE)
+	{
 		uint8_t counts = 0;
 		uint8_t i = 0;
-		counts = ceil(reload_value / SYS_TIMER_1sec_VALUE );
+		counts = ceil(ticks / SYS_TIMER_1sec_VALUE );
 		Dio_Write_Pin(&(STCTRL), INTEN_PIN, LOW);
 		
 		for(i = 0; i< counts; i++)
@@ -98,8 +79,21 @@ void Sys_Timer_delay(void)
 			
 			Sys_Timer_delay_1sec(SYS_TIMER_1sec_VALUE);
 		}	
+	}
+	else 
+	{
+		/*1.SET RELOAD VALUE IN STRELOAD REGISTER*/				
+		Dio_Write_Port(&(STRELOAD), ticks-1);
+	
+		/*2.RESET CURRENT VALUE IN STCURRENT REGISTER AND TO CLEAR COUNT FLAG*/
+		Dio_Write_Port(&(STCURRENT), CURRENT_VALUE_RESET);
+	
+		/*4. ENABLE THE SYS_TIMER*/
+		Dio_Write_Pin(&(STCTRL), EN_PIN, HIGH);
+	}	
+	
+	
 }
-
 void Module_Clk_init(MODULE_TYPE module)
 {
 	switch(module)

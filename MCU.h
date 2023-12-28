@@ -1,7 +1,7 @@
 #ifndef  MCU_H_
 #define  MCU_H_
 /*-----------INCLUDES-----------*/
-#include "Dio.h"
+#include "..\DIO\Dio.h"
 
 typedef uint32_t 		STR_RELOAD_TYPE;
 typedef uint32_t 		STR_CURRENT_TYPE;
@@ -54,7 +54,6 @@ typedef uint8_t 		MODULE_TYPE;
 
  typedef struct
  {
-	 STR_RELOAD_TYPE 		STR_Load_Value;
 	 STR_CONTROL_TYPE		Clk_Souce;
 	 STR_CONTROL_TYPE		INT_Config;
 	 
@@ -74,8 +73,8 @@ typedef uint8_t 		MODULE_TYPE;
 
 /*-----------APIs FUNCTIONS DECLARATION-----------*/
 void Sys_Timer_init(const Clk_user_Config *clk_config_Ptr );
-void Sys_Timer_delay_1sec(uint32_t ticks );
-void Sys_Timer_delay(void);
+void Sys_Timer_delay_1sec(uint32_t ticks);
+void Sys_Timer_delay(uint32_t ticks);
 void Module_Clk_init(MODULE_TYPE module);
 void Module_Clk_Deinit(MODULE_TYPE module);
  

@@ -2,11 +2,11 @@
 #include "GPTM.h"
 #include "math.h"
 /*-----------LOCAL MACROS-----------*/
-cb_type CallBack_Ptr_timer 	= NULL;
-cb_type Callback_Ptr[12];     /*Array of pointers to functions for delay */
+cb_ptr CallBack_Ptr_timer 	= NULL;
+cb_ptr Callback_Ptr[12];     /*Array of pointers to functions for delay */
 
-uint8_t Timer_Handler_served = 0;
-uint8_t Timer_Stopped = 0;
+uint8 Timer_Handler_served = 0;
+uint8 Timer_Stopped = 0;
 /*-----------GLOBAL STATIC VARIABLES-----------*/
 
 /*-----------GLOBAL EXTERN VARIABLES-----------*/
@@ -14,9 +14,9 @@ uint8_t Timer_Stopped = 0;
 /*-----------APIs FUNCTIONS DECLARATION-----------*/
 void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 {
-	uint8_t idx = 0;
-	uint8_t TimerBitType = 0;
-	uint8_t	BitConfigType = 0;
+	uint8 idx = 0;
+	uint8 TimerBitType = 0;
+	uint8	BitConfigType = 0;
 	
 	for(idx = 0; idx < NUM_OF_TIMERS_Config; idx++)
 	{
@@ -27,8 +27,8 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 		
 	 Gpt_ChannelType		   timermodule 	= 	ConfigPtr[idx].Gpt_Channel_ID;    			   /*TIMER_0 -> TIMER_5*/               
 	 Gpt_ChannelType 		   TimerType 		= 	ConfigPtr[idx].Gpt_Timer;								   /*TIMER_A or TIMER_B*/
-	 uint8_t 						   frequency		=   ConfigPtr[idx].Gpt_ChannelTickFrequency;
-	 uint32_t 					   max_ticks	  =   ConfigPtr[idx].Gpt_ChannelTickValueMax;
+	 uint8 						   frequency		=   ConfigPtr[idx].Gpt_ChannelTickFrequency;
+	 uint32 					   max_ticks	  =   ConfigPtr[idx].Gpt_ChannelTickValueMax;
 	 Gpt_ConcateType			 concate      =		ConfigPtr[idx].Gpt_Timer16_32_Concate;
 		
 	 CallBack_Ptr_timer		              = 	ConfigPtr[idx].Gpt_Notificaton;                         /*Call Back Function Pointer*/
@@ -67,16 +67,16 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 				default: /*TODO: ERROR*/ break;			 
 		 }
 		 
-		 //while((Dio_Read_Pin(&(PRTIMER_16_32), TIMER1)) == 0); 			// STEP_2 Wait until the peripheral is ready
+		 //while((Read_Pin(&(PRTIMER_16_32), TIMER1)) == 0); 			// STEP_2 Wait until the peripheral is ready
 		 
 		if(TIMERA == TimerType)  		 /*disable TIMER_A counter*/
 		{
-			 Dio_Write_Pin(&(GPTMCTL(timermodule)), TAEN, LOW);   
+			 Write_Pin(&(GPTMCTL(timermodule)), TAEN, LOW);
 			
 		}
 		else if(TIMERB == TimerType)  /*disable TIMER_B counter*/
 		{
-			 Dio_Write_Pin(&(GPTMCTL(timermodule)), TBEN, LOW);  
+			 Write_Pin(&(GPTMCTL(timermodule)), TBEN, LOW);
 		}
 		else{/*TODO: ERROR*/}
 		
@@ -100,19 +100,19 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 				break;
 				case PERIODIC: GPTMTAMR(timermodule) |= 0X02;
 				break;
-				case CAPTURE:  GPTMTAMR(timermodule) |= 0X03; ( (EDGE_COUNT == capture_mode)? Dio_Write_Pin(&(GPTMTAMR(timermodule)), TACMR, LOW): Dio_Write_Pin(&(GPTMTAMR(timermodule)), TACMR, HIGH) );
+				case CAPTURE:  GPTMTAMR(timermodule) |= 0X03; ( (EDGE_COUNT == capture_mode)? Write_Pin(&(GPTMTAMR(timermodule)), TACMR, LOW): Write_Pin(&(GPTMTAMR(timermodule)), TACMR, HIGH) );
 				break;
 				default: /*TODO: ERROR*/ break;
 			}
 		
 			if(UP_COUNT == countDir)
 			{
-				Dio_Write_Pin(&(GPTMTAMR(timermodule)), TACDIR, HIGH);
+				Write_Pin(&(GPTMTAMR(timermodule)), TACDIR, HIGH);
 				
 			}
 			else if(DOWN_COUNT == countDir)
 			{
-				Dio_Write_Pin(&(GPTMTAMR(timermodule)), TACDIR, LOW);
+				Write_Pin(&(GPTMTAMR(timermodule)), TACDIR, LOW);
 				
 			}
 			else {/*TODO: ERROR*/}
@@ -127,12 +127,12 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 				}
 				else if(neg_edge == event_modeType)
 				{
-					Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN2, HIGH);      //0X1
+					Write_Pin(&(GPTMCTL(timermodule)), PIN2, HIGH);      //0X1
 				}
 				else if(both_edges == event_modeType)
 				{
-					Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN2, HIGH);    //0X3
-					Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN3, HIGH);
+					Write_Pin(&(GPTMCTL(timermodule)), PIN2, HIGH);    //0X3
+					Write_Pin(&(GPTMCTL(timermodule)), PIN3, HIGH);
 				}
 				else {/*TODO: ERROR*/}			
 			}
@@ -145,12 +145,12 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 				 }
 				 else if(neg_edge == event_modeType)
 				 {
-						Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);      //0X1
+						Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);      //0X1
 				 }
 				 else if(both_edges == event_modeType)
 				 {
-						Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);    //0X3
-						Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN11, HIGH);
+						Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);    //0X3
+						Write_Pin(&(GPTMCTL(timermodule)), PIN11, HIGH);
 				 }
 				 else {/*TODO: ERROR*/}				
 				
@@ -167,7 +167,7 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 				break;
 				case PERIODIC: GPTMTBMR(timermodule) |= 0X02; 
 				break;
-				case CAPTURE:  GPTMTBMR(timermodule) |= 0X03; ( (EDGE_COUNT == capture_mode)? Dio_Write_Pin(&(GPTMTBMR(timermodule)), TBCMR, LOW): Dio_Write_Pin(&(GPTMTBMR(timermodule)), TBCMR, HIGH) );
+				case CAPTURE:  GPTMTBMR(timermodule) |= 0X03; ( (EDGE_COUNT == capture_mode)? Write_Pin(&(GPTMTBMR(timermodule)), TBCMR, LOW): Write_Pin(&(GPTMTBMR(timermodule)), TBCMR, HIGH) );
 				break;
 				default: /*TODO: ERROR*/ break;
 			
@@ -175,11 +175,11 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 		
 			if(UP_COUNT == countDir)
 			{
-				Dio_Write_Pin(&(GPTMTBMR(timermodule)), TBCDIR, HIGH);
+				Write_Pin(&(GPTMTBMR(timermodule)), TBCDIR, HIGH);
 			}
 			else if(DOWN_COUNT == countDir)
 			{
-				Dio_Write_Pin(&(GPTMTBMR(timermodule)), TBCDIR, LOW);
+				Write_Pin(&(GPTMTBMR(timermodule)), TBCDIR, LOW);
 			}
 			else {/*TODO: ERROR*/}			
 			
@@ -190,12 +190,12 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 			}
 			else if(neg_edge == event_modeType)
 			{
-				Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);      //0X1
+				Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);      //0X1
 			}
 			else if(both_edges == event_modeType)
 			{
-				Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);    //0X3
-				Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN11, HIGH);
+				Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);    //0X3
+				Write_Pin(&(GPTMCTL(timermodule)), PIN11, HIGH);
 			}
 			else {/*TODO: ERROR*/}
 	
@@ -224,16 +224,16 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 				break;
 				default: /*TODO: ERROR*/ break;
 		 }
-		 //while((Dio_Read_Pin(&(PRTIMER_16_32), TIMER1)) == 0); 			// STEP_2 Wait until the peripheral is ready
+		 //while((Read_Pin(&(PRTIMER_16_32), TIMER1)) == 0); 			// STEP_2 Wait until the peripheral is ready
 		 
 		if(TIMERA == TimerType)
 		{
-			 Dio_Write_Pin(&(GPTMCTL(timermodule)), TAEN, LOW);   /*disable the counter*/
+			 Write_Pin(&(GPTMCTL(timermodule)), TAEN, LOW);   /*disable the counter*/
 			
 		}
 		else if(TIMERB == TimerType)
 		{
-			 Dio_Write_Pin(&(GPTMCTL(timermodule)), TBEN, LOW);  /*disable the counter*/
+			 Write_Pin(&(GPTMCTL(timermodule)), TBEN, LOW);  /*disable the counter*/
 		}
 		else{/*TODO: ERROR*/}
 		
@@ -257,18 +257,18 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 				break;
 				case PERIODIC: GPTMTAMR(timermodule) |= 0X02;
 				break;
-				case CAPTURE:  GPTMTAMR(timermodule) |= 0X03; ( (EDGE_COUNT == capture_mode)? Dio_Write_Pin(&(GPTMTAMR(timermodule)), TACMR, LOW): Dio_Write_Pin(&(GPTMTAMR(timermodule)), TACMR, HIGH) );
+				case CAPTURE:  GPTMTAMR(timermodule) |= 0X03; ( (EDGE_COUNT == capture_mode)? Write_Pin(&(GPTMTAMR(timermodule)), TACMR, LOW): Write_Pin(&(GPTMTAMR(timermodule)), TACMR, HIGH) );
 				break;
 				default: /*TODO: ERROR*/ break;
 			}
 		
 			if(UP_COUNT == countDir)
 			{
-				Dio_Write_Pin(&(GPTMTAMR(timermodule)), TACDIR, HIGH);
+				Write_Pin(&(GPTMTAMR(timermodule)), TACDIR, HIGH);
 			}
 			else if(DOWN_COUNT == countDir)
 			{
-				Dio_Write_Pin(&(GPTMTAMR(timermodule)), TACDIR, LOW);
+				Write_Pin(&(GPTMTAMR(timermodule)), TACDIR, LOW);
 			}
 			else {/*TODO: ERROR*/}
 			
@@ -282,12 +282,12 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 				}
 				else if(neg_edge == event_modeType)
 				{
-					Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN2, HIGH);      //0X1
+					Write_Pin(&(GPTMCTL(timermodule)), PIN2, HIGH);      //0X1
 				}
 				else if(both_edges == event_modeType)
 				{
-					Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN2, HIGH);    //0X3
-					Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN3, HIGH);
+					Write_Pin(&(GPTMCTL(timermodule)), PIN2, HIGH);    //0X3
+					Write_Pin(&(GPTMCTL(timermodule)), PIN3, HIGH);
 				}
 				else {/*TODO: ERROR*/}			
 			}
@@ -300,12 +300,12 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 				 }
 				 else if(neg_edge == event_modeType)
 				 {
-						Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);      //0X1
+						Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);      //0X1
 				 }
 				 else if(both_edges == event_modeType)
 				 {
-						Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);    //0X3
-						Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN11, HIGH);
+						Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);    //0X3
+						Write_Pin(&(GPTMCTL(timermodule)), PIN11, HIGH);
 				 }
 				 else {/*TODO: ERROR*/}				
 				
@@ -322,7 +322,7 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 				break;
 				case PERIODIC: GPTMTBMR(timermodule) |= 0X02; 
 				break;
-				case CAPTURE:  GPTMTBMR(timermodule) |= 0X03; ( (EDGE_COUNT == capture_mode)? Dio_Write_Pin(&(GPTMTBMR(timermodule)), TBCMR, LOW): Dio_Write_Pin(&(GPTMTBMR(timermodule)), TBCMR, HIGH) );
+				case CAPTURE:  GPTMTBMR(timermodule) |= 0X03; ( (EDGE_COUNT == capture_mode)? Write_Pin(&(GPTMTBMR(timermodule)), TBCMR, LOW): Write_Pin(&(GPTMTBMR(timermodule)), TBCMR, HIGH) );
 				break;
 				default: /*TODO: ERROR*/ break;
 			
@@ -330,11 +330,11 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 		
 			if(UP_COUNT == countDir)
 			{
-				Dio_Write_Pin(&(GPTMTBMR(timermodule)), TBCDIR, HIGH);
+				Write_Pin(&(GPTMTBMR(timermodule)), TBCDIR, HIGH);
 			}
 			else if(DOWN_COUNT == countDir)
 			{
-				Dio_Write_Pin(&(GPTMTBMR(timermodule)), TBCDIR, LOW);
+				Write_Pin(&(GPTMTBMR(timermodule)), TBCDIR, LOW);
 			}
 			else {/*TODO: ERROR*/}			
 			
@@ -345,12 +345,12 @@ void Gpt_Init(const Gpt_ConfigType *ConfigPtr)
 			}
 			else if(neg_edge == event_modeType)
 			{
-				Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);      //0X1
+				Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);      //0X1
 			}
 			else if(both_edges == event_modeType)
 			{
-				Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);    //0X3
-				Dio_Write_Pin(&(GPTMCTL(timermodule)), PIN11, HIGH);
+				Write_Pin(&(GPTMCTL(timermodule)), PIN10, HIGH);    //0X3
+				Write_Pin(&(GPTMCTL(timermodule)), PIN11, HIGH);
 			}
 			else {/*TODO: ERROR*/}				
 		}
@@ -375,15 +375,15 @@ void Gpt_EnableNotification(Gpt_ChannelType module, Gpt_ChannelType Timer)
 {
 	if((TIMERA) == (Timer))
   {
-			Dio_Write_Pin(&(GPTMICR(module)), TATOCINT, HIGH);
+			Write_Pin(&(GPTMICR(module)), TATOCINT, HIGH);
 	
-			Dio_Write_Pin(&(GPTMIMR(module)), TATOIM, HIGH);	
+			Write_Pin(&(GPTMIMR(module)), TATOIM, HIGH);
 	} 
 	else if(TIMERB == Timer)
 {
-			Dio_Write_Pin(&(GPTMICR(module)), TBTOCINT, HIGH);
+			Write_Pin(&(GPTMICR(module)), TBTOCINT, HIGH);
 
-			Dio_Write_Pin(&(GPTMIMR(module)), TBTOIM, HIGH);		
+			Write_Pin(&(GPTMIMR(module)), TBTOIM, HIGH);
 }
 	else {/*ERROR HANDLE PLEASE SELECT A OR B*/}
 	
@@ -393,23 +393,23 @@ void Gpt_DisableNotification(Gpt_ChannelType module, Gpt_ChannelType Timer)
 {
 	if((TIMERA) == (Timer))
   {
-			Dio_Write_Pin(&(GPTMICR(module)), TATOCINT, HIGH);
+			Write_Pin(&(GPTMICR(module)), TATOCINT, HIGH);
 	
-			Dio_Write_Pin(&(GPTMIMR(module)), TATOIM, LOW);	
+			Write_Pin(&(GPTMIMR(module)), TATOIM, LOW);
 	} 
 	else if(TIMERB == Timer)
 {
-			Dio_Write_Pin(&(GPTMICR(module)), TBTOCINT, HIGH);
+			Write_Pin(&(GPTMICR(module)), TBTOCINT, HIGH);
 
-			Dio_Write_Pin(&(GPTMIMR(module)), TBTOIM, LOW);		
+			Write_Pin(&(GPTMIMR(module)), TBTOIM, LOW);
 }
 	else {/*ERROR HANDLE PLEASE SELECT A OR B*/}	
 }
 
 void Gpt_StartTimer(Gpt_ChannelType module, Gpt_ChannelType Timer, Gpt_ValueType Value)
 {
-	uint8_t prescale = 0;
-	uint32_t value = 0;
+	uint8 prescale = 0;
+	uint32 value = 0;
   if(module <= 5) 			/*_16_32*/
 	{
 		if(Value > MAX_DELAY_16bit)
@@ -423,16 +423,16 @@ void Gpt_StartTimer(Gpt_ChannelType module, Gpt_ChannelType Timer, Gpt_ValueType
   	{
 			GPTMTAPR(module) =  prescale;
 			
-		 ( ( (Dio_Read_Pin(&(GPTMTBMR(module)), TACDIR)) == UP_COUNT)? (GPTMTAILR(module) =  value-1) : (GPTMTAILR(module) =  value-1) );
+		 ( ( (Read_Pin(&(GPTMTBMR(module)), TACDIR)) == UP_COUNT)? (GPTMTAILR(module) =  value-1) : (GPTMTAILR(module) =  value-1) );
 			
-			Dio_Write_Pin(&(GPTMCTL(module)), TAEN, HIGH);
+			Write_Pin(&(GPTMCTL(module)), TAEN, HIGH);
 			
 			if(NULL == Callback_Ptr[module])     /*interrupt off*/
 			{
-				while( ( Dio_Read_Pin( &(GPTMRIS(module)), TATORIS ) )  == 0 && (Timer_Stopped == 0) ){}; 	
+				while( ( Read_Pin( &(GPTMRIS(module)), TATORIS ) )  == 0 && (Timer_Stopped == 0) ){};
 			}
 			else{ 
-				while( ( Dio_Read_Pin( &(GPTMRIS(module)), TATORIS ) )  == 0 && (Timer_Handler_served == 0) ){}; 
+				while( ( Read_Pin( &(GPTMRIS(module)), TATORIS ) )  == 0 && (Timer_Handler_served == 0) ){};
 			  
 			}
 		}
@@ -440,16 +440,16 @@ void Gpt_StartTimer(Gpt_ChannelType module, Gpt_ChannelType Timer, Gpt_ValueType
 		{
 			GPTMTBPR(module) =  prescale;
 			
-		 ( ( (Dio_Read_Pin(&(GPTMTBMR(module)), TBCDIR)) == UP_COUNT)? (GPTMTBILR(module) =  value-1) : (GPTMTBILR(module) =  value-1) );
+		 ( ( (Read_Pin(&(GPTMTBMR(module)), TBCDIR)) == UP_COUNT)? (GPTMTBILR(module) =  value-1) : (GPTMTBILR(module) =  value-1) );
 			
-			Dio_Write_Pin(&(GPTMCTL(module)), TBEN, HIGH);
+			Write_Pin(&(GPTMCTL(module)), TBEN, HIGH);
 			
 			if(NULL == Callback_Ptr[module]) /*interrupt off*/
 			{
-				while( ( Dio_Read_Pin( &(GPTMRIS(module)), TBTORIS ) )  == 0 && (Timer_Stopped == 0));	
+				while( ( Read_Pin( &(GPTMRIS(module)), TBTORIS ) )  == 0 && (Timer_Stopped == 0));
 			}
 			else{ 
-				while( ( Dio_Read_Pin( &(GPTMRIS(module)), TBTORIS ) )  == 0 && (Timer_Handler_served == 0) ){}; 			
+				while( ( Read_Pin( &(GPTMRIS(module)), TBTORIS ) )  == 0 && (Timer_Handler_served == 0) ){};
 			}
 		}		
 	else {/*ERROR HANDLE PLEASE SELECT A OR B*/}
@@ -467,31 +467,31 @@ void Gpt_StartTimer(Gpt_ChannelType module, Gpt_ChannelType Timer, Gpt_ValueType
   	{
 			GPTMTAPR(module) =  prescale;
 			
-		 ( ( (Dio_Read_Pin(&(GPTMTBMR(module)), TACDIR)) == UP_COUNT)? (GPTMTAILR(module) =  value-1) : (GPTMTAILR(module) =  value-1) );
+		 ( ( (Read_Pin(&(GPTMTBMR(module)), TACDIR)) == UP_COUNT)? (GPTMTAILR(module) =  value-1) : (GPTMTAILR(module) =  value-1) );
 			
-			Dio_Write_Pin(&(GPTMCTL(module)), TAEN, HIGH);
+			Write_Pin(&(GPTMCTL(module)), TAEN, HIGH);
 			
 			if(NULL == Callback_Ptr[module])     /*interrupt off*/
 			{
-				while( ( Dio_Read_Pin( &(GPTMRIS(module)), TATORIS ) )  == 0 && (Timer_Stopped == 0)){};		
+				while( ( Read_Pin( &(GPTMRIS(module)), TATORIS ) )  == 0 && (Timer_Stopped == 0)){};
 			}
 			else{ 
-				while( ( Dio_Read_Pin( &(GPTMRIS(module)), TATORIS ) )  == 0 && (Timer_Handler_served == 0) ){}; 			
+				while( ( Read_Pin( &(GPTMRIS(module)), TATORIS ) )  == 0 && (Timer_Handler_served == 0) ){};
 			}		
 		}
 		else if(TIMERB == Timer)
 		{
 			GPTMTBPR(module) =  prescale;
 			
-		 ( ( (Dio_Read_Pin(&(GPTMTBMR(module)), TBCDIR)) == UP_COUNT)? (GPTMTBILR(module) =  value-1) : (GPTMTBILR(module) =  value-1) );
+		 ( ( (Read_Pin(&(GPTMTBMR(module)), TBCDIR)) == UP_COUNT)? (GPTMTBILR(module) =  value-1) : (GPTMTBILR(module) =  value-1) );
 			
-			Dio_Write_Pin(&(GPTMCTL(module)), TBEN, HIGH);
+			Write_Pin(&(GPTMCTL(module)), TBEN, HIGH);
 			if(NULL == Callback_Ptr[module]) /*interrupt off*/
 			{
-				while( ( Dio_Read_Pin( &(GPTMRIS(module)), TBTORIS ) )  == 0 && (Timer_Stopped == 0));
+				while( ( Read_Pin( &(GPTMRIS(module)), TBTORIS ) )  == 0 && (Timer_Stopped == 0));
 			}
 			else{ 
-				while( ( Dio_Read_Pin( &(GPTMRIS(module)), TBTORIS ) )  == 0 && (Timer_Handler_served == 0) ){}; 
+				while( ( Read_Pin( &(GPTMRIS(module)), TBTORIS ) )  == 0 && (Timer_Handler_served == 0) ){};
 			}		
 		}		
 	else {/*ERROR HANDLE PLEASE SELECT A OR B*/}		
@@ -511,25 +511,25 @@ void Gpt_StopTimer(Gpt_ChannelType module, Gpt_ChannelType Timer)
 {
 	if(TIMERA == Timer)
 	{
-		Dio_Write_Pin(&(GPTMCTL(module)), TAEN, LOW);
-		if(( Dio_Read_Pin( &(GPTMRIS(module)), TATORIS ) )  == 0 && Timer_Handler_served == 0) /*Stopped before timed out*/
+		Write_Pin(&(GPTMCTL(module)), TAEN, LOW);
+		if(( Read_Pin( &(GPTMRIS(module)), TATORIS ) )  == 0 && Timer_Handler_served == 0) /*Stopped before timed out*/
 		{
 			Timer_Stopped = 1;
 			Timer_Handler_served = 1;
 		}
-		Dio_Write_Pin(&(GPTMICR(module)), TATOCINT, HIGH);
+		Write_Pin(&(GPTMICR(module)), TATOCINT, HIGH);
 		
 	}
 	else if(TIMERB == Timer)
 	{
-		Dio_Write_Pin(&(GPTMCTL(module)), TBEN, LOW);
-		if(( Dio_Read_Pin( &(GPTMRIS(module)), TBTORIS ) )  == 0 && Timer_Handler_served == 0) /*Stopped before timed out*/
+		Write_Pin(&(GPTMCTL(module)), TBEN, LOW);
+		if(( Read_Pin( &(GPTMRIS(module)), TBTORIS ) )  == 0 && Timer_Handler_served == 0) /*Stopped before timed out*/
 		{
 			Timer_Stopped = 1;
 			Timer_Handler_served = 1;
 			
 		}
-		Dio_Write_Pin(&(GPTMICR(module)), TBTOCINT, HIGH);
+		Write_Pin(&(GPTMICR(module)), TBTOCINT, HIGH);
 	}
 	else{/*ERROR HANDLE PLEASE SELECT A OR B*/}
 	

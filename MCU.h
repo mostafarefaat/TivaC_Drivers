@@ -7,8 +7,8 @@
  ********************************************************************************
  */
 
-#ifndef PLL_H_
-#define PLL_H_
+#ifndef MCU_H_
+#define MCU_H_
 
 /************************************
  * INCLUDES
@@ -41,9 +41,22 @@
 #define DIV400													30
 
 
-#define SYSCTL_RCGCGPIO_REG       	(*((volatile uint32 *)0x400FE608)) 			
-#define SYSCTL_PRGPIO_REG         	(*((volatile uint32 *)0x400FEA08))
 
+/*Clock Registers*/	
+#define RCGCGPIO 										*((volatile uint32 *)0x400FE608)
+#define RCGCDMA 										*((volatile uint32 *)0x400FE60C)
+#define RCGCUART 										*((volatile uint32 *)0x400FE618)
+#define RCGCI2C 										*((volatile uint32 *)0x400FE620)
+#define RCGCCAN 										*((volatile uint32 *)0x400FE634)
+#define RCGCADC 										*((volatile uint32 *)0x400FE638)
+#define RCGCPWM 										*((volatile uint32 *)0x400FE640)
+#define RCGCWD											*((volatile uint32 *)0x400FE600)
+#define RCGCTIMER										*((volatile uint32 *)0x400FE604)	
+#define RCGCWTIMER									*((volatile uint32 *)0x400FE65C)
+
+#define PRGPIO		 									*((volatile uint32 *)( 0x400FEA08))
+
+/*PLL Registers*/
 #define RIS 												(*((volatile uint32 *)0x400FE050))
 #define RCC 												(*((volatile uint32 *)0x400FE060))
 #define RCC2 												(*((volatile uint32 *)0x400FE070))
@@ -52,7 +65,7 @@
 /************************************
  * TYPEDEFS
  ************************************/
-
+typedef uint8		MODULE_TYPE;
 /************************************
  * EXPORTED VARIABLES
  ************************************/
@@ -60,7 +73,15 @@
 /************************************
  * ENUMS
 ************************************/
-
+ enum Module
+ {
+	 GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOF, DMA, UART, I2C, CAN, ADC, PWM, WDT0, WDT1,	/*PAGE 104*/
+	 
+	 Timer_0_module_16_32, Timer_1_module_16_32, Timer_2_module_16_32, Timer_3_module_16_32, Timer_4_module_16_32, Timer_5_module_16_32,
+	 
+	 Timer_0_module_32_64, Timer_1_module_32_64, Timer_2_module_32_64, Timer_3_module_32_64, Timer_4_module_32_64, Timer_5_module_32_64,
+	 
+ };
 
 /************************************
  * STRUCTURES
@@ -70,6 +91,8 @@
  * GLOBAL FUNCTION PROTOTYPES
  ************************************/
 void PLL_init(void);
+void Module_Clk_init(MODULE_TYPE module);
+void Module_Clk_Deinit(MODULE_TYPE module);
 
 
 

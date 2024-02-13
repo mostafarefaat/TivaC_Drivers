@@ -14,6 +14,7 @@
  * INCLUDES
  ************************************/
 #include "std_types.h"
+#include "MCU.h"
 
 /************************************
  * MACROS AND DEFINES
@@ -197,10 +198,6 @@ typedef struct
 #define PF2 *((volatile uint32 *)(GPIO_BASE_ADDRESS(5) + bit_2_addr_offset))
 #define PF3 *((volatile uint32 *)(GPIO_BASE_ADDRESS(5) + bit_3_addr_offset))
 #define PF4 *((volatile uint32 *)(GPIO_BASE_ADDRESS(5) + bit_4_addr_offset))
-
-/*CLK*/
-#define SYSCTL_RCGCGPIO_REG       (*((volatile uint32 *)0x400FE608)) 			
-#define SYSCTL_PRGPIO_REG         (*((volatile uint32 *)0x400FEA08))
 
 /************************************
  * GLOBAL FUNCTION PROTOTYPES

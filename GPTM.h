@@ -1,19 +1,19 @@
 #ifndef GPTM_H_
 #define GPTM_H_
 /*-----------INCLUDES-----------*/
-#include "Dio.h"
+#include "GPIO.h"
 #include "MCU.h"
 
 /*-----------TYPE DEFs-----------*/
-typedef uint8_t  Gpt_ChannelType;
+typedef uint8  Gpt_ChannelType;
 typedef double Gpt_ValueType;
-typedef uint32_t Gpt_ChannelTickFrequencyType;
-typedef uint32_t Gpt_ChannelTickValueMaxType;
-typedef uint8_t	 Gpt_ChannelModeType;
-typedef uint8_t	 Gpt_CountDirType;
-typedef uint8_t  Gpt_EventModeType;
-typedef uint8_t  Gpt_CaptureModeType;
-typedef uint8_t  Gpt_ConcateType;
+typedef uint32 Gpt_ChannelTickFrequencyType;
+typedef uint32 Gpt_ChannelTickValueMaxType;
+typedef uint8	 Gpt_ChannelModeType;
+typedef uint8	 Gpt_CountDirType;
+typedef uint8  Gpt_EventModeType;
+typedef uint8  Gpt_CaptureModeType;
+typedef uint8  Gpt_ConcateType;
 
 
 /*--------------------------------*/
@@ -41,7 +41,7 @@ typedef struct
 	Gpt_CaptureModeType										Gpt_CaptureMode;					/*EDGE COUNT or EDGE TIMER*/
 	Gpt_ConcateType												Gpt_Timer16_32_Concate;		/*USED WHEN NEED TO USE TIMER16_32 IN CONCATE MODE PUT NULL IF NOT NEEDED*/
 	
-	cb_type																Gpt_Notificaton;
+	cb_ptr																Gpt_Notificaton;
 	
 }Gpt_ConfigType;
 /*--------------------------------*/
@@ -171,133 +171,133 @@ typedef struct
 
 #define GPTM_BASE_ADDRESS(x)	( x<8? ((0X40030000) + ((x)*0x1000)) : ((0X40040000) + ((x)*0x1000)) )
 /*-----------TIMERS REGISTERS-----------*/  /*PAGE 726*/
-#define GPTMCFG(x) 			 	 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x000))
-#define GPTMTAMR(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x004))
-#define GPTMTBMR(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x008))
-#define GPTMCTL(x) 			   *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x00C))
-#define GPTMSYNC(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x010))
-#define GPTMIMR(x) 			   *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x018))
-#define GPTMRIS(x) 			   *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x01C))
-#define GPTMMIS(x) 			   *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x020))
-#define GPTMICR(x) 			   *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x024))
-#define GPTMTAILR(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x028))
-#define GPTMTBILR(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x02C))
-#define GPTMTAMATCHR(x) 	 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x030))
-#define GPTMTBMATCHR(x) 	 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x034))
-#define GPTMTAPR(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x038))
-#define GPTMTBPR(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x03C))
-#define GPTMTAPMR(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x040))
-#define GPTMTBPMR(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x044))
-#define GPTMTAR(x) 			   *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x048))
-#define GPTMTBR(x) 			   *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x04C))
-#define GPTMTAV(x) 			   *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x050))
-#define GPTMTBV(x) 			   *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x054))
-#define GPTMRTCPD(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x058))
-#define GPTMTAPS(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x05C))
-#define GPTMTBPS(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x060))
-#define GPTMTAPV(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x064))
-#define GPTMTBPV(x) 			 *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0x068))
-#define GPTMPP(x) 			   *((volatile uint32_t *)(GPTM_BASE_ADDRESS(x) + 0xFC0))
+#define GPTMCFG(x) 			 	 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x000))
+#define GPTMTAMR(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x004))
+#define GPTMTBMR(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x008))
+#define GPTMCTL(x) 			   *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x00C))
+#define GPTMSYNC(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x010))
+#define GPTMIMR(x) 			   *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x018))
+#define GPTMRIS(x) 			   *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x01C))
+#define GPTMMIS(x) 			   *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x020))
+#define GPTMICR(x) 			   *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x024))
+#define GPTMTAILR(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x028))
+#define GPTMTBILR(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x02C))
+#define GPTMTAMATCHR(x) 	 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x030))
+#define GPTMTBMATCHR(x) 	 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x034))
+#define GPTMTAPR(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x038))
+#define GPTMTBPR(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x03C))
+#define GPTMTAPMR(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x040))
+#define GPTMTBPMR(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x044))
+#define GPTMTAR(x) 			   *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x048))
+#define GPTMTBR(x) 			   *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x04C))
+#define GPTMTAV(x) 			   *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x050))
+#define GPTMTBV(x) 			   *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x054))
+#define GPTMRTCPD(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x058))
+#define GPTMTAPS(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x05C))
+#define GPTMTBPS(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x060))
+#define GPTMTAPV(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x064))
+#define GPTMTBPV(x) 			 *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0x068))
+#define GPTMPP(x) 			   *((volatile uint32 *)(GPTM_BASE_ADDRESS(x) + 0xFC0))
 	
-#define PRTIMER_16_32 		*((volatile uint32_t *)0x400FEA04)
+#define PRTIMER_16_32 		*((volatile uint32 *)0x400FEA04)
 
-/*#define GPTMCFG_TIMER0_16_32 		*((volatile uint32_t *)0x40030000)
-#define GPTMCFG_TIMER1_16_32 		*((volatile uint32_t *)0x40031000)
-#define GPTMCFG_TIMER2_16_32 		*((volatile uint32_t *)0x40032000)
-#define GPTMCFG_TIMER3_16_32 		*((volatile uint32_t *)0x40033000)
-#define GPTMCFG_TIMER4_16_32 		*((volatile uint32_t *)0x40034000)
-#define GPTMCFG_TIMER5_16_32 		*((volatile uint32_t *)0x40035000)
+/*#define GPTMCFG_TIMER0_16_32 		*((volatile uint32 *)0x40030000)
+#define GPTMCFG_TIMER1_16_32 		*((volatile uint32 *)0x40031000)
+#define GPTMCFG_TIMER2_16_32 		*((volatile uint32 *)0x40032000)
+#define GPTMCFG_TIMER3_16_32 		*((volatile uint32 *)0x40033000)
+#define GPTMCFG_TIMER4_16_32 		*((volatile uint32 *)0x40034000)
+#define GPTMCFG_TIMER5_16_32 		*((volatile uint32 *)0x40035000)
 
-#define GPTMCFG_TIMER0_32_64 		*((volatile uint32_t *)0x40036000)
-#define GPTMCFG_TIMER1_32_64 		*((volatile uint32_t *)0x40037000)
-#define GPTMCFG_TIMER2_32_64 		*((volatile uint32_t *)0x4004C000)
-#define GPTMCFG_TIMER3_32_64 		*((volatile uint32_t *)0x4004D000)
-#define GPTMCFG_TIMER4_32_64 		*((volatile uint32_t *)0x4004E000)
-#define GPTMCFG_TIMER5_32_64 		*((volatile uint32_t *)0x4004F000)
+#define GPTMCFG_TIMER0_32_64 		*((volatile uint32 *)0x40036000)
+#define GPTMCFG_TIMER1_32_64 		*((volatile uint32 *)0x40037000)
+#define GPTMCFG_TIMER2_32_64 		*((volatile uint32 *)0x4004C000)
+#define GPTMCFG_TIMER3_32_64 		*((volatile uint32 *)0x4004D000)
+#define GPTMCFG_TIMER4_32_64 		*((volatile uint32 *)0x4004E000)
+#define GPTMCFG_TIMER5_32_64 		*((volatile uint32 *)0x4004F000)
 	
-#define GPTMTAMR_TIMER0_16_32 		*((volatile uint32_t *)0x40030004)
-#define GPTMTAMR_TIMER1_16_32 		*((volatile uint32_t *)0x40031004)
-#define GPTMTAMR_TIMER2_16_32 		*((volatile uint32_t *)0x40032004)
-#define GPTMTAMR_TIMER3_16_32 		*((volatile uint32_t *)0x40033004)
-#define GPTMTAMR_TIMER4_16_32 		*((volatile uint32_t *)0x40034004)
-#define GPTMTAMR_TIMER5_16_32 		*((volatile uint32_t *)0x40035004)
+#define GPTMTAMR_TIMER0_16_32 		*((volatile uint32 *)0x40030004)
+#define GPTMTAMR_TIMER1_16_32 		*((volatile uint32 *)0x40031004)
+#define GPTMTAMR_TIMER2_16_32 		*((volatile uint32 *)0x40032004)
+#define GPTMTAMR_TIMER3_16_32 		*((volatile uint32 *)0x40033004)
+#define GPTMTAMR_TIMER4_16_32 		*((volatile uint32 *)0x40034004)
+#define GPTMTAMR_TIMER5_16_32 		*((volatile uint32 *)0x40035004)
 
-#define GPTMTAMR_TIMER0_32_64 		*((volatile uint32_t *)0x40036004)
-#define GPTMTAMR_TIMER1_32_64 		*((volatile uint32_t *)0x40037004)
-#define GPTMTAMR_TIMER2_32_64 		*((volatile uint32_t *)0x4004C004)
-#define GPTMTAMR_TIMER3_32_64 		*((volatile uint32_t *)0x4004D004)
-#define GPTMTAMR_TIMER4_32_64 		*((volatile uint32_t *)0x4004E004)
-#define GPTMTAMR_TIMER5_32_64 		*((volatile uint32_t *)0x4004F004)
+#define GPTMTAMR_TIMER0_32_64 		*((volatile uint32 *)0x40036004)
+#define GPTMTAMR_TIMER1_32_64 		*((volatile uint32 *)0x40037004)
+#define GPTMTAMR_TIMER2_32_64 		*((volatile uint32 *)0x4004C004)
+#define GPTMTAMR_TIMER3_32_64 		*((volatile uint32 *)0x4004D004)
+#define GPTMTAMR_TIMER4_32_64 		*((volatile uint32 *)0x4004E004)
+#define GPTMTAMR_TIMER5_32_64 		*((volatile uint32 *)0x4004F004)
 	
-#define GPTMCTL_TIMER0_16_32 		*((volatile uint32_t *)0x4003000C)
-#define GPTMCTL_TIMER1_16_32 		*((volatile uint32_t *)0x4003100C)
-#define GPTMCTL_TIMER2_16_32 		*((volatile uint32_t *)0x4003200C)
-#define GPTMCTL_TIMER3_16_32 		*((volatile uint32_t *)0x4003300C)
-#define GPTMCTL_TIMER4_16_32 		*((volatile uint32_t *)0x4003400C)
-#define GPTMCTL_TIMER5_16_32 		*((volatile uint32_t *)0x4003500C)
+#define GPTMCTL_TIMER0_16_32 		*((volatile uint32 *)0x4003000C)
+#define GPTMCTL_TIMER1_16_32 		*((volatile uint32 *)0x4003100C)
+#define GPTMCTL_TIMER2_16_32 		*((volatile uint32 *)0x4003200C)
+#define GPTMCTL_TIMER3_16_32 		*((volatile uint32 *)0x4003300C)
+#define GPTMCTL_TIMER4_16_32 		*((volatile uint32 *)0x4003400C)
+#define GPTMCTL_TIMER5_16_32 		*((volatile uint32 *)0x4003500C)
 
-#define GPTMCTL_TIMER0_32_64 		*((volatile uint32_t *)0x4003600C)
-#define GPTMCTL_TIMER1_32_64 		*((volatile uint32_t *)0x4003700C)
-#define GPTMCTL_TIMER2_32_64 		*((volatile uint32_t *)0x4004C00C)
-#define GPTMCTL_TIMER3_32_64 		*((volatile uint32_t *)0x4004D00C)
-#define GPTMCTL_TIMER4_32_64 		*((volatile uint32_t *)0x4004E00C)
-#define GPTMCTL_TIMER5_32_64 		*((volatile uint32_t *)0x4004F00C)
+#define GPTMCTL_TIMER0_32_64 		*((volatile uint32 *)0x4003600C)
+#define GPTMCTL_TIMER1_32_64 		*((volatile uint32 *)0x4003700C)
+#define GPTMCTL_TIMER2_32_64 		*((volatile uint32 *)0x4004C00C)
+#define GPTMCTL_TIMER3_32_64 		*((volatile uint32 *)0x4004D00C)
+#define GPTMCTL_TIMER4_32_64 		*((volatile uint32 *)0x4004E00C)
+#define GPTMCTL_TIMER5_32_64 		*((volatile uint32 *)0x4004F00C)
 	
-#define GPTMTAPR_TIMER0_16_32 		*((volatile uint32_t *)0x40030038)
-#define GPTMTAPR_TIMER1_16_32 		*((volatile uint32_t *)0x40031038)
-#define GPTMTAPR_TIMER2_16_32 		*((volatile uint32_t *)0x40032038)
-#define GPTMTAPR_TIMER3_16_32 		*((volatile uint32_t *)0x40033038)
-#define GPTMTAPR_TIMER4_16_32 		*((volatile uint32_t *)0x40034038)
-#define GPTMTAPR_TIMER5_16_32 		*((volatile uint32_t *)0x40035038)
+#define GPTMTAPR_TIMER0_16_32 		*((volatile uint32 *)0x40030038)
+#define GPTMTAPR_TIMER1_16_32 		*((volatile uint32 *)0x40031038)
+#define GPTMTAPR_TIMER2_16_32 		*((volatile uint32 *)0x40032038)
+#define GPTMTAPR_TIMER3_16_32 		*((volatile uint32 *)0x40033038)
+#define GPTMTAPR_TIMER4_16_32 		*((volatile uint32 *)0x40034038)
+#define GPTMTAPR_TIMER5_16_32 		*((volatile uint32 *)0x40035038)
 
-#define GPTMTAPR_TIMER0_32_64 		*((volatile uint32_t *)0x40036038)
-#define GPTMTAPR_TIMER1_32_64 		*((volatile uint32_t *)0x40037038)
-#define GPTMTAPR_TIMER2_32_64 		*((volatile uint32_t *)0x4004C038)
-#define GPTMTAPR_TIMER3_32_64 		*((volatile uint32_t *)0x4004D038)
-#define GPTMTAPR_TIMER4_32_64 		*((volatile uint32_t *)0x4004E038)
-#define GPTMTAPR_TIMER5_32_64 		*((volatile uint32_t *)0x4004F038)
+#define GPTMTAPR_TIMER0_32_64 		*((volatile uint32 *)0x40036038)
+#define GPTMTAPR_TIMER1_32_64 		*((volatile uint32 *)0x40037038)
+#define GPTMTAPR_TIMER2_32_64 		*((volatile uint32 *)0x4004C038)
+#define GPTMTAPR_TIMER3_32_64 		*((volatile uint32 *)0x4004D038)
+#define GPTMTAPR_TIMER4_32_64 		*((volatile uint32 *)0x4004E038)
+#define GPTMTAPR_TIMER5_32_64 		*((volatile uint32 *)0x4004F038)
 	
-#define GPTMTAILR_TIMER0_16_32 		*((volatile uint32_t *)0x40030028)
-#define GPTMTAILR_TIMER1_16_32 		*((volatile uint32_t *)0x40031028)
-#define GPTMTAILR_TIMER2_16_32 		*((volatile uint32_t *)0x40032028)
-#define GPTMTAILR_TIMER3_16_32 		*((volatile uint32_t *)0x40033028)
-#define GPTMTAILR_TIMER4_16_32 		*((volatile uint32_t *)0x40034028)
-#define GPTMTAILR_TIMER5_16_32 		*((volatile uint32_t *)0x40035028)
+#define GPTMTAILR_TIMER0_16_32 		*((volatile uint32 *)0x40030028)
+#define GPTMTAILR_TIMER1_16_32 		*((volatile uint32 *)0x40031028)
+#define GPTMTAILR_TIMER2_16_32 		*((volatile uint32 *)0x40032028)
+#define GPTMTAILR_TIMER3_16_32 		*((volatile uint32 *)0x40033028)
+#define GPTMTAILR_TIMER4_16_32 		*((volatile uint32 *)0x40034028)
+#define GPTMTAILR_TIMER5_16_32 		*((volatile uint32 *)0x40035028)
 
-#define GPTMTAILR_TIMER0_32_64 		*((volatile uint32_t *)0x40036028)
-#define GPTMTAILR_TIMER1_32_64 		*((volatile uint32_t *)0x40037028)
-#define GPTMTAILR_TIMER2_32_64 		*((volatile uint32_t *)0x4004C028)
-#define GPTMTAILR_TIMER3_32_64 		*((volatile uint32_t *)0x4004D028)
-#define GPTMTAILR_TIMER4_32_64 		*((volatile uint32_t *)0x4004E028)
-#define GPTMTAILR_TIMER5_32_64 		*((volatile uint32_t *)0x4004F028)
+#define GPTMTAILR_TIMER0_32_64 		*((volatile uint32 *)0x40036028)
+#define GPTMTAILR_TIMER1_32_64 		*((volatile uint32 *)0x40037028)
+#define GPTMTAILR_TIMER2_32_64 		*((volatile uint32 *)0x4004C028)
+#define GPTMTAILR_TIMER3_32_64 		*((volatile uint32 *)0x4004D028)
+#define GPTMTAILR_TIMER4_32_64 		*((volatile uint32 *)0x4004E028)
+#define GPTMTAILR_TIMER5_32_64 		*((volatile uint32 *)0x4004F028)
 	
-#define GPTMICR_TIMER0_16_32 		*((volatile uint32_t *)0x40030024)
-#define GPTMICR_TIMER1_16_32 		*((volatile uint32_t *)0x40031024)
-#define GPTMICR_TIMER2_16_32 		*((volatile uint32_t *)0x40032024)
-#define GPTMICR_TIMER3_16_32 		*((volatile uint32_t *)0x40033024)
-#define GPTMICR_TIMER4_16_32 		*((volatile uint32_t *)0x40034024)
-#define GPTMICR_TIMER5_16_32 		*((volatile uint32_t *)0x40035024)
+#define GPTMICR_TIMER0_16_32 		*((volatile uint32 *)0x40030024)
+#define GPTMICR_TIMER1_16_32 		*((volatile uint32 *)0x40031024)
+#define GPTMICR_TIMER2_16_32 		*((volatile uint32 *)0x40032024)
+#define GPTMICR_TIMER3_16_32 		*((volatile uint32 *)0x40033024)
+#define GPTMICR_TIMER4_16_32 		*((volatile uint32 *)0x40034024)
+#define GPTMICR_TIMER5_16_32 		*((volatile uint32 *)0x40035024)
 
-#define GPTMICR_TIMER0_32_64 		*((volatile uint32_t *)0x40036024)
-#define GPTMICR_TIMER1_32_64 		*((volatile uint32_t *)0x40037024)
-#define GPTMICR_TIMER2_32_64 		*((volatile uint32_t *)0x4004C024)
-#define GPTMICR_TIMER3_32_64 		*((volatile uint32_t *)0x4004D024)
-#define GPTMICR_TIMER4_32_64 		*((volatile uint32_t *)0x4004E024)
-#define GPTMICR_TIMER5_32_64 		*((volatile uint32_t *)0x4004F024)
+#define GPTMICR_TIMER0_32_64 		*((volatile uint32 *)0x40036024)
+#define GPTMICR_TIMER1_32_64 		*((volatile uint32 *)0x40037024)
+#define GPTMICR_TIMER2_32_64 		*((volatile uint32 *)0x4004C024)
+#define GPTMICR_TIMER3_32_64 		*((volatile uint32 *)0x4004D024)
+#define GPTMICR_TIMER4_32_64 		*((volatile uint32 *)0x4004E024)
+#define GPTMICR_TIMER5_32_64 		*((volatile uint32 *)0x4004F024)
 	
-#define GPTMIMR_TIMER0_16_32 		*((volatile uint32_t *)0x40030018)
-#define GPTMIMR_TIMER1_16_32 		*((volatile uint32_t *)0x40031018)
-#define GPTMIMR_TIMER2_16_32 		*((volatile uint32_t *)0x40032018)
-#define GPTMIMR_TIMER3_16_32 		*((volatile uint32_t *)0x40033018)
-#define GPTMIMR_TIMER4_16_32 		*((volatile uint32_t *)0x40034018)
-#define GPTMIMR_TIMER5_16_32 		*((volatile uint32_t *)0x40035018)
+#define GPTMIMR_TIMER0_16_32 		*((volatile uint32 *)0x40030018)
+#define GPTMIMR_TIMER1_16_32 		*((volatile uint32 *)0x40031018)
+#define GPTMIMR_TIMER2_16_32 		*((volatile uint32 *)0x40032018)
+#define GPTMIMR_TIMER3_16_32 		*((volatile uint32 *)0x40033018)
+#define GPTMIMR_TIMER4_16_32 		*((volatile uint32 *)0x40034018)
+#define GPTMIMR_TIMER5_16_32 		*((volatile uint32 *)0x40035018)
 
-#define GPTMIMR_TIMER0_32_64 		*((volatile uint32_t *)0x40036018)
-#define GPTMIMR_TIMER1_32_64 		*((volatile uint32_t *)0x40037018)
-#define GPTMIMR_TIMER2_32_64 		*((volatile uint32_t *)0x4004C018)
-#define GPTMIMR_TIMER3_32_64 		*((volatile uint32_t *)0x4004D018)
-#define GPTMIMR_TIMER4_32_64 		*((volatile uint32_t *)0x4004E018)
-#define GPTMIMR_TIMER5_32_64 		*((volatile uint32_t *)0x4004F018*/
+#define GPTMIMR_TIMER0_32_64 		*((volatile uint32 *)0x40036018)
+#define GPTMIMR_TIMER1_32_64 		*((volatile uint32 *)0x40037018)
+#define GPTMIMR_TIMER2_32_64 		*((volatile uint32 *)0x4004C018)
+#define GPTMIMR_TIMER3_32_64 		*((volatile uint32 *)0x4004D018)
+#define GPTMIMR_TIMER4_32_64 		*((volatile uint32 *)0x4004E018)
+#define GPTMIMR_TIMER5_32_64 		*((volatile uint32 *)0x4004F018*/
 
 /*-----------END OF TIMERS REGISTERS-----------*/ 
 
@@ -318,7 +318,7 @@ void Gpt_StartTimer(Gpt_ChannelType module, Gpt_ChannelType Timer, Gpt_ValueType
 void Gpt_StopTimer(Gpt_ChannelType module, Gpt_ChannelType Timer);
 
 
-void register_timer1A_cb(cb_type Ptr);
+void register_timer1A_cb(cb_ptr Ptr);
 void TIMER1A_Handler(void);
 void WTIMER1B_Handler(void);
 

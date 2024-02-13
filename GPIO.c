@@ -54,14 +54,14 @@ uint8 Port_Init(const Port_ConfigType *Port_Config_Ptr, uint8 Num_of_pins )
 		
 		for(Pin_Counter = 0; Pin_Counter < Num_of_pins; Pin_Counter++)
 		{
-			PortType 		port_num = Port_Config_Ptr[Pin_Counter].Port;
+			PortType 			port_num = Port_Config_Ptr[Pin_Counter].Port;
 			PinNumType 		pin_num  = Port_Config_Ptr[Pin_Counter].Pin_Num;
 			
 			/*STEP_1 INITIALIZE THE CLOCK*/
-			Write_Pin(&(SYSCTL_RCGCGPIO_REG), port_num, HIGH);			/*TODO:Check if already Enabled*/
+			Module_Clk_init(port_num);
 			
 		  /* STEP_2 Wait until the peripheral is ready*/
-			while((Read_Pin(&(SYSCTL_PRGPIO_REG), port_num)) == 0);
+			while((Read_Pin(&(PRGPIO), port_num)) == 0);
  			
 			/* STEP_3 Unlock the peripheral if needed */
 			if( (PORTC == port_num) & ( (pin_num == 0) || (pin_num == 1) || (pin_num == 2) || (pin_num == 3) ) ){   /*PC[3:0]*/

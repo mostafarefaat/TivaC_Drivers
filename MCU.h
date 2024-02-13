@@ -1,87 +1,77 @@
-#ifndef  MCU_H_
-#define  MCU_H_
-/*-----------INCLUDES-----------*/
-#include "..\DIO\Dio.h"
+/**
+ ********************************************************************************
+ * @file    GPIO.h
+ * @author  Mostafa Refaat
+ * @date    31/1/2024
+ * @brief   
+ ********************************************************************************
+ */
 
-typedef uint32_t 		STR_RELOAD_TYPE;
-typedef uint32_t 		STR_CURRENT_TYPE;
-typedef uint8_t 		STR_CONTROL_TYPE;
-typedef uint8_t 		MODULE_TYPE;
-/*-----------LOCAL MACROS-----------*/
+#ifndef PLL_H_
+#define PLL_H_
 
-#define BASE_ADDRESS					0XE000E000
-#define RELOAD_VALUE_MASK			0xFFFFFF
-#define CURRENT_VALUE_RESET		0X00000000
-#define SYS_TIMER_MAX_VALUE		16777215
-#define SYS_TIMER_1sec_VALUE	16000000
-#define	PIOSC									16000000.0
-#define	SYSTEM_CLK						1
-#define	INTERRUPT_ON					1
-#define	INTERRUPT_OFF					0
+/************************************
+ * INCLUDES
+ ************************************/
+#include "..\GPIO\GPIO.h"
 
+/************************************
+ * MACROS AND DEFINES
+ ************************************/
+#define SYSCTL_RCC2_USERCC2_MASK        0x80000000  /* USERCC2 Bit MASK */
+#define SYSCTL_RCC2_BYPASS2_MASK        0x00000800  /* PLL BYPASS2 Bit MASK */
+#define SYSCTL_RCC_XTAL_MASK            0x000007C0  /* XTAL Bits MASK */
+#define SYSCTL_RCC_XTAL_8MHZ            0x0E        /* 8 MHz Crystal Value */
+#define SYSCTL_RCC_XTAL_16MHZ           0x15        /* 16 MHz Crystal Value */
+#define SYSCTL_RCC_XTAL_BIT_POS         6           /* XTAL Bits Position start from bit number 6 */
+#define SYSCTL_RCC2_OSCSRC2_MASK        0x00000070  /* OSCSRC2 Bits MASK */
+#define SYSCTL_RCC2_OSCSRC2_MOSC        0x0         /* MOSC(Main Oscillator) value */
+#define SYSCTL_RCC2_OSCSRC2_BIT_POS     4           /* OSCSRC2 Bits Position start from bit number 4 */
+#define SYSCTL_RCC2_PWRDN2_MASK         0x00002000  /* PWRDN2 Bit MASK */
+#define SYSCTL_RCC2_DIV400_MASK         0x40000000  /* DIV400 Bit MASK to Divide PLL as 400 MHz vs. 200 */
+#define SYSCTL_RCC2_SYSDIV2_MASK        0x1FC00000  /* SYSDIV2 Bits MASK */
+#define SYSCTL_RIS_PLLLRIS_MASK         0x00000040  /* PLLLRIS Bit MASK */
+#define SYSCTL_RCC2_SYSDIV2_BIT_POS     22          /* SYSDIV2 Bits Position start from bit number 22 */
+#define SYSDIV2_VALUE_80MHZ             4						
+#define SYSDIV2_VALUE_10MHZ             39
 
-/*-----------STCTRL PINS-----------*/
-#define EN_PIN						0
-#define INTEN_PIN					1
-#define CLK_SRC_PIN				2
-#define COUNT_PIN					16
-
-/*-----------SYSTEM TIMER REGISTERS-----------*/ 
-#define STCTRL 			 		*((volatile uint32_t *)(BASE_ADDRESS + 0x010))
-#define STRELOAD 			 	*((volatile uint32_t *)(BASE_ADDRESS + 0x014))
-#define STCURRENT 			*((volatile uint32_t *)(BASE_ADDRESS + 0x018))
-	
-/*-----------SYSTEM CONTROL REGISTERS-----------*/  /*PAGE 232*/
-
-#define RCGCGPIO 		*((volatile uint32_t *)0x400FE608)
-#define RCGCDMA 		*((volatile uint32_t *)0x400FE60C)
-#define RCGCUART 		*((volatile uint32_t *)0x400FE618)
-#define RCGCI2C 		*((volatile uint32_t *)0x400FE620)
-#define RCGCCAN 		*((volatile uint32_t *)0x400FE634)
-#define RCGCADC 		*((volatile uint32_t *)0x400FE638)
-#define RCGCPWM 		*((volatile uint32_t *)0x400FE640)
-#define RCGCWD			*((volatile uint32_t *)0x400FE600)
-#define RCGCTIMER			*((volatile uint32_t *)0x400FE604)	
-#define RCGCWTIMER			*((volatile uint32_t *)0x400FE65C)
+#define USERCC2													31
+#define BYPASS2													11
+#define PWRDN2													13
+#define DIV400													30
 
 
-#define PRGPIO		 	*((volatile uint32_t *)( 0x400FEA08))
+#define SYSCTL_RCGCGPIO_REG       	(*((volatile uint32 *)0x400FE608)) 			
+#define SYSCTL_PRGPIO_REG         	(*((volatile uint32 *)0x400FEA08))
 
-/*-----------END OF MCU REGISTERS-----------*/
+#define RIS 												(*((volatile uint32 *)0x400FE050))
+#define RCC 												(*((volatile uint32 *)0x400FE060))
+#define RCC2 												(*((volatile uint32 *)0x400FE070))
 
 
-/*-----------GLOBAL STATIC VARIABLES-----------*/
+/************************************
+ * TYPEDEFS
+ ************************************/
 
- typedef struct
- {
-	 STR_CONTROL_TYPE		Clk_Souce;
-	 STR_CONTROL_TYPE		INT_Config;
-	 
-	 
- }Clk_user_Config;
- 
- enum Module
- {
-	 GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOF, DMA, UART, I2C, CAN, ADC, PWM, WDT0, WDT1,	/*PAGE 104*/
-	 Timer_0_module_16_32, Timer_1_module_16_32, Timer_2_module_16_32, Timer_3_module_16_32, Timer_4_module_16_32, Timer_5_module_16_32,
-	 Timer_0_module_32_64, Timer_1_module_32_64, Timer_2_module_32_64, Timer_3_module_32_64, Timer_4_module_32_64, Timer_5_module_32_64,
-	 
- };
-	
-/*-----------GLOBAL EXTERN VARIABLES-----------*/
- 
+/************************************
+ * EXPORTED VARIABLES
+ ************************************/
 
-/*-----------APIs FUNCTIONS DECLARATION-----------*/
-void Sys_Timer_init(const Clk_user_Config *clk_config_Ptr );
-void Sys_Timer_delay_1sec(uint32_t ticks);
-void Sys_Timer_delay(uint32_t ticks);
-void Module_Clk_init(MODULE_TYPE module);
-void Module_Clk_Deinit(MODULE_TYPE module);
- 
-void register_systick_cb(cb_type Ptr);
+/************************************
+ * ENUMS
+************************************/
 
-void SysTick_Handler(void);
 
-//STR_RELOAD_TYPE reload_value_hex, STR_CONTROL_TYPE clk_source, STR_CONTROL_TYPE interrupt_config
+/************************************
+ * STRUCTURES
+ ************************************/
+
+/************************************
+ * GLOBAL FUNCTION PROTOTYPES
+ ************************************/
+void PLL_init(void);
+
+
 
 #endif
+

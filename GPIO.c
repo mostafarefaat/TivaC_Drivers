@@ -1,13 +1,49 @@
-/*-----------INCLUDES-----------*/
+/**
+ ********************************************************************************
+ * @file    GPIO.c
+ * @author  Mostafa Refaat
+ * @date    31/1/2024
+ * @brief
+ ********************************************************************************
+ */
+
+/************************************
+ * INCLUDES
+ ************************************/
 #include "GPIO.h"
+/************************************
+ * EXTERN VARIABLES
+ ************************************/
 
-/*-----------LOCAL MACROS-----------*/
+/************************************
+ * PRIVATE MACROS AND DEFINES
+ ************************************/
 
-/*-----------GLOBAL STATIC VARIABLES-----------*/
+
+/************************************
+ * PRIVATE TYPEDEFS
+ ************************************/
+
+/************************************
+ * STATIC VARIABLES
+ ************************************/
 cb_ptr CallBack_Ptr_gpio = NULL_PTR;
-/*-----------GLOBAL EXTERN VARIABLES-----------*/
+/************************************
+ * GLOBAL VARIABLES
+ ************************************/
 
-/*-----------APIs IMPLEMENTATION-----------*/
+/************************************
+ * STATIC FUNCTION PROTOTYPES
+ ************************************/
+
+/************************************
+ * STATIC FUNCTIONS
+ ************************************/
+
+/************************************
+ * GLOBAL FUNCTIONS
+ ************************************/
+
 uint8 Port_Init(const Port_ConfigType *Port_Config_Ptr, uint8 Num_of_pins )
 {
 	uint8 Pin_Counter = 0;
@@ -18,11 +54,11 @@ uint8 Port_Init(const Port_ConfigType *Port_Config_Ptr, uint8 Num_of_pins )
 		
 		for(Pin_Counter = 0; Pin_Counter < Num_of_pins; Pin_Counter++)
 		{
-			PortType 			port_num = Port_Config_Ptr[Pin_Counter].Port;
+			PortType 		port_num = Port_Config_Ptr[Pin_Counter].Port;
 			PinNumType 		pin_num  = Port_Config_Ptr[Pin_Counter].Pin_Num;
 			
 			/*STEP_1 INITIALIZE THE CLOCK*/
-			Write_Pin(&(SYSCTL_RCGCGPIO_REG), port_num, HIGH);
+			Write_Pin(&(SYSCTL_RCGCGPIO_REG), port_num, HIGH);			/*TODO:Check if already Enabled*/
 			
 		  /* STEP_2 Wait until the peripheral is ready*/
 			while((Read_Pin(&(SYSCTL_PRGPIO_REG), port_num)) == 0);

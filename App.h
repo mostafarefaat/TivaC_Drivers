@@ -1,39 +1,29 @@
 /**
  ********************************************************************************
- * @file    Sys_Tick.h
+ * @file    App.h
  * @author  Mostafa Refaat
  * @date    31/1/2024
  * @brief   
  ********************************************************************************
  */
 
-#ifndef _SYS_TICK_
-#define _SYS_TICK_
+#ifndef _APP_H_
+#define _APP_H_
 
 /************************************
  * INCLUDES
  ************************************/
 #include "GPIO.h"
+#include "Sys_Tick.h"
+#include "MCU.h"
+#include "NVIC.h"
 /************************************
  * MACROS AND DEFINES
  ************************************/
-
-#define BASE_ADDRESS					0XE000E000
-#define STCTRL 			 			*((volatile uint32 *)(BASE_ADDRESS + 0x010))
-#define STRELOAD 			 		*((volatile uint32 *)(BASE_ADDRESS + 0x014))
-#define STCURRENT 				*((volatile uint32 *)(BASE_ADDRESS + 0x018))
-	
-#define EN_PIN							0
-#define INTEN_PIN						1
-#define CLK_SRC_PIN					2
-#define COUNT_FLAG_PIN			16
-
-#define CURRENT_VALUE_RESET		0X00000000
-
-#define	PIOSC									0
-#define	System_CLK						1
-#define	Interrupt_ON					1
-#define	Interrupt_OFF					0
+#define NUMBER_OF_ITERATIONS_FOR_ONE_MILLI_SECOND		364
+#define Red_On				0x02
+#define Blue_On				0x04
+#define Green_On			0x08
 /************************************
  * TYPEDEFS
  ************************************/
@@ -45,10 +35,12 @@
 /************************************
  * GLOBAL FUNCTION PROTOTYPES
  ************************************/
-void Sys_tick_init(uint32 ticks, uint8 clk_source, uint8 interrupt_config);
-void Sys_tick_Start(void);
-void Sys_tick_Stop(void);
-void register_systick_cb(cb_ptr Ptr);
+void App_init(void);
+void App_run(void);
+void Delay_MS(unsigned long long n);
+
+void GPIOF_Driver_Handler(void);
+void SysTick_Driver_Handler(void);
 
 
 #endif 

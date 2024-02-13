@@ -13,7 +13,7 @@
 /************************************
  * INCLUDES
  ************************************/
-#include "..\STD_TYPES\std_types.h"
+#include "std_types.h"
 
 /************************************
  * MACROS AND DEFINES

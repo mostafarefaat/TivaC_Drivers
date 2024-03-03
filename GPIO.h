@@ -13,9 +13,8 @@
 /************************************
  * INCLUDES
  ************************************/
-#include "std_types.h"
-#include "MCU.h"
-
+#include "..\STD_TYPES\std_types.h"
+#include "..\MCU\MCU.h"
 /************************************
  * MACROS AND DEFINES
  ************************************/

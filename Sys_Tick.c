@@ -1,6 +1,6 @@
 /**
  ********************************************************************************
- * @file    Sys_Tick.c
+ * @file    app.c
  * @author  Mostafa Refaat
  * @date    31/1/2024
  * @brief   
@@ -42,7 +42,7 @@ cb_ptr CallBack_Ptr_SysTick = NULL_PTR;
 /************************************
  * GLOBAL FUNCTIONS
  ************************************/
-void Sys_tick_init(uint32 ticks, uint8 clk_source, uint8 interrupt_config){
+void Sys_tick_init(uint32 ticks, uint8 clk_source, uint8 interrupt_config, uint8 priority){
 	/*0.DISABLE THE SYS_TIMER*/
 	Write_Pin(&(STCTRL), EN_PIN, LOW);
 
@@ -66,6 +66,10 @@ void Sys_tick_init(uint32 ticks, uint8 clk_source, uint8 interrupt_config){
 	if(interrupt_config == Interrupt_ON)
 	{
 		Write_Pin(&(STCTRL), INTEN_PIN, HIGH);
+		
+		STPRI &= 	STPRI_MASK;
+		STPRI |= 	priority << STPRI_BIT_POS;
+		
 	}
 	else if(interrupt_config == Interrupt_OFF)
 	{

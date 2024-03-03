@@ -1,6 +1,6 @@
 /**
  ********************************************************************************
- * @file    Sys_Tick.h
+ * @file    app.h
  * @author  Mostafa Refaat
  * @date    31/1/2024
  * @brief   
@@ -13,22 +13,25 @@
 /************************************
  * INCLUDES
  ************************************/
-#include "GPIO.h"
+#include "..\GPIO\GPIO.h"
 /************************************
  * MACROS AND DEFINES
  ************************************/
 
 #define BASE_ADDRESS					0XE000E000
-#define STCTRL 			 			*((volatile uint32 *)(BASE_ADDRESS + 0x010))
-#define STRELOAD 			 		*((volatile uint32 *)(BASE_ADDRESS + 0x014))
-#define STCURRENT 				*((volatile uint32 *)(BASE_ADDRESS + 0x018))
-	
+#define STCTRL 			 					*((volatile uint32 *)(BASE_ADDRESS + 0x010))
+#define STRELOAD 			 				*((volatile uint32 *)(BASE_ADDRESS + 0x014))
+#define STCURRENT 						*((volatile uint32 *)(BASE_ADDRESS + 0x018))
+#define STPRI 								*((volatile uint32 *)(BASE_ADDRESS + 0xD20))	
+
 #define EN_PIN							0
 #define INTEN_PIN						1
 #define CLK_SRC_PIN					2
 #define COUNT_FLAG_PIN			16
 
-#define CURRENT_VALUE_RESET		0X00000000
+#define CURRENT_VALUE_RESET			0X00000000
+#define STPRI_MASK							0X1FFFFFFF
+#define STPRI_BIT_POS						29
 
 #define	PIOSC									0
 #define	System_CLK						1
@@ -45,7 +48,7 @@
 /************************************
  * GLOBAL FUNCTION PROTOTYPES
  ************************************/
-void Sys_tick_init(uint32 ticks, uint8 clk_source, uint8 interrupt_config);
+void Sys_tick_init(uint32 ticks, uint8 clk_source, uint8 interrupt_config, uint8 priority);
 void Sys_tick_Start(void);
 void Sys_tick_Stop(void);
 void register_systick_cb(cb_ptr Ptr);

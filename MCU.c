@@ -26,7 +26,10 @@
 /************************************
  * STATIC VARIABLES
  ************************************/
-
+cb_ptr CallBack_Ptr_HardFault = NULL_PTR;
+cb_ptr CallBack_Ptr_BusFault = NULL_PTR;
+cb_ptr CallBack_Ptr_UsageFault = NULL_PTR;
+cb_ptr CallBack_Ptr_MemoryFault = NULL_PTR;
 /************************************
  * GLOBAL VARIABLES
  ************************************/
@@ -86,7 +89,7 @@ void Module_Clk_init(MODULE_TYPE module)
 		/*TODO: COMPLETE THE MODULES*/
 	  case DMA:	
 		break;
-		case UART:	
+		case UART_0:	
 		break;
 		case I2C:
 		break;
@@ -147,7 +150,7 @@ void Module_Clk_Deinit(MODULE_TYPE module)
 		/*TODO: COMPLETE THE MODULES*/
 	  case DMA:	
 		break;
-		case UART:	
+		case UART_0:	
 		break;
 		case I2C:
 		break;
@@ -189,3 +192,195 @@ void Module_Clk_Deinit(MODULE_TYPE module)
 	}
 	
 }
+
+void MPU_Init(void)
+{
+    /* Enable the MemManage Fault Exception */
+    Enable_MemoryFault();
+    /* Check if this target supports MPU or not */
+    if(MPU_TYPE_REG == 0)
+        return;
+
+    /* Ensures all memory accesses are finished before a fresh memory access is made */
+    DMB();
+
+    /* Disable the MPU before start programming the memory regions */
+    MPU_CTRL_REG = 0;
+
+    /********************** Programming Region 0 - Flash memory (256KB) **********************
+     * Normal Memory, Cacheable, Not Shareable and Write Through
+     * Base Address 0x00000000
+     * Region Size 256KB --> SIZE field in the attribute register should be 0x11
+     * Privilege has FULL ACCESS (RW) --> AP field in the attribute register should be 0x03
+     * Non-Privilege has FULL ACCESS (RW) --> AP field in the attribute register should be 0x03
+     ******************************************************************************************/
+
+    /* Update the region number */
+    MPU_NUMBER_REG = 0;
+
+    /* Update the region base address */
+    MPU_BASE_REG = 0x00000000;
+
+    /* Update the region size and attributes */
+    MPU_ATTR_REG = (0x11<<MPU_ATTR_SIZE_BITS_POS) | MPU_ATTR_REGION_ENABLE_MASK | 
+            MPU_ATTR_C_MASK | (0x03 << MPU_ATTR_AP_BITS_POS);
+
+    /*************************** Programming Region 1 - SRAM (32KB) *************************
+     * Normal Memory, Cacheable, Shareable and Write Through
+     * Base Address 0x20000000
+     * Region Size 32KB --> SIZE field in the attribute register should be 0x0E
+     * Privilege has FULL ACCESS (RW) --> AP field in the attribute register should be 0x03
+     * Non-Privilege has FULL ACCESS (RW) --> AP field in the attribute register should be 0x03
+     *****************************************************************************************/
+
+    /* Update the region base address and region number */
+    MPU_BASE_REG = 0x20000000 | MPU_BASE_VALID_MASK | 1;
+
+    /* Update the region size and attributes */
+    MPU_ATTR_REG = (0x0E << MPU_ATTR_SIZE_BITS_POS) | MPU_ATTR_REGION_ENABLE_MASK |
+            MPU_ATTR_C_MASK | MPU_ATTR_S_MASK | (0x03 << MPU_ATTR_AP_BITS_POS);
+
+    /******************** Programming region 2 - PORTF Memory Map Area **********************
+     * Device Memory Sharable and Bufferable
+     * Base Address 0x40025000
+     * region Size 4k(0x1000) --> SIZE field in the attribute register should be 0x0B
+     * Privilege has FULL ACCESS (RW) --> AP field in the attribute register should be 0x03
+     * Non-Privilege has FULL ACCESS (RW) --> AP field in the attribute register should be 0x03
+     *****************************************************************************************/
+
+    /* Update the region base address and region number */
+    MPU_BASE_REG = 0x40025000 | MPU_BASE_VALID_MASK | 2;
+
+    /* Update the region size and attributes */
+    MPU_ATTR_REG = (0x0B << MPU_ATTR_SIZE_BITS_POS) | MPU_ATTR_REGION_ENABLE_MASK |
+            MPU_ATTR_B_MASK | MPU_ATTR_S_MASK | (0x03 << MPU_ATTR_AP_BITS_POS);
+
+    /* Enable the MPU */
+    MPU_CTRL_REG |= MPU_CTRL_ENABLE_MASK;
+
+    /* Ensures all memory accesses are finished before the next instruction is executed */
+    DSB();
+
+    /* Ensures that all previous instructions are completed before the next instruction is executed. This also flushes the CPU pipeline */
+    ISB();
+}
+
+/* Set PRIV Bit(Bit 0) in the CONTROL register to switch to Unprivileged access level */
+void Switch_To_Unprivileged(void)
+{
+    __asm(" MOV R0, #1 ");      /* Set the R0 register value to 1 */
+    __asm(" MSR CONTROL, R0 "); /* Set the PRIV Bit(Bit 0) to 1 ... This will switch to Unprivileged access level */
+}
+void SVC_Handler(void){
+
+uint8 SVC_Num = 0;              /* First local variable stored in stack */
+    __asm(" LDR  R3, [__current_sp(), #24] ");   /* Extract the stacked PC register value which vectoring to this handler and add it to R3 */
+    __asm(" LDRB R3, [R3, #-2] ");  /* Extract the SVC number value, it is exist in the first byte of address PC-2 */
+    __asm(" MOV #SVC_Num, R3 ");        /* Load the R3 value to SVC_Num variable as SP is pointing to SVC_Num location in the stack memory */
+	
+	switch(SVC_Num){
+		
+		case 0 :   break;
+		case 1 :         __asm(" MOV R3, #0 ");      /* Load the R3 register with value 0 */
+										 __asm(" MSR CONTROL, R3 "); /* Clear the PRIV Bit(Bit 0) ... This will switch to Privileged access level */
+							 break;
+		case 2 : 	 break;
+		case 3 :   break;
+		case 4 : 	 break;
+		default :  break;
+	}
+   
+}
+void SVC_Set_PRI(uint8 Priority){
+	
+	SYSPRI2 &= SVC_PRI_Mask;
+	SYSPRI2 |= Priority << SVC_Pri_Bit_Pos;
+}
+
+
+void PendSV_Pend(void){
+	
+	Write_Pin(&INTCTRL, PENDSV_Pending_Bit_Pos, HIGH);
+	
+}
+void PendSV_unPend(void){
+	
+	Write_Pin(&INTCTRL, PENDSV_unPending_Bit_Pos, HIGH);
+	
+}
+void PendSV_Set_PRI(uint8 Priority){
+	
+	SYSPRI3 &= PENDSV_PRI_Mask;
+	SYSPRI3 |= Priority << PENDSV_Pri_Bit_Pos;
+	
+}
+void PendSV_Handler(void){
+	
+	/*Write Code here*/
+}
+void BusFault_Set_PRI(uint8 Priority){
+	SYSPRI1 &= BusFault_PRI_Mask;
+	SYSPRI1 |= Priority << BusFault_Pri_Bit_Pos;
+	
+}
+
+void MemManage_Set_PRI(uint8 Priority){
+	SYSPRI1 &= MemoryFault_PRI_Mask;
+	SYSPRI1 |= Priority << MemoryFault_Pri_Bit_Pos;
+	
+}
+
+void UsageFault_Set_PRI(uint8 Priority){
+	SYSPRI1 &= UsageFault_PRI_Mask;
+	SYSPRI1 |= Priority << UsageFault_Pri_Bit_Pos;
+	
+}
+
+void register_Faults_cb( const cb_ptr *Ptr, uint8 size)
+{
+	int i;
+	for( i = 0; i<size; i++){
+		if(NULL_PTR != *Ptr)
+		{
+			switch(i){
+				case 0: CallBack_Ptr_HardFault = *Ptr; break;
+				case 1: CallBack_Ptr_BusFault = *Ptr; break;
+				case 2: CallBack_Ptr_UsageFault = *Ptr; break;
+				case 3: CallBack_Ptr_MemoryFault = *Ptr; break;
+				default: break;
+			}
+		}
+			Ptr++;
+	}
+}
+
+void HardFault_Handler(void){
+	if(NULL_PTR != CallBack_Ptr_HardFault)
+	{
+		CallBack_Ptr_HardFault();
+	}
+	
+}
+void BusFault_Handler(void){
+	if(NULL_PTR != CallBack_Ptr_BusFault)
+	{
+		CallBack_Ptr_BusFault();
+	}
+	
+}
+void UsageFault_Handler(void){
+	if(NULL_PTR != CallBack_Ptr_UsageFault)
+	{
+		CallBack_Ptr_UsageFault();
+	}
+	
+}
+void MemManage_Handler(void){
+	if(NULL_PTR != CallBack_Ptr_MemoryFault)
+	{
+		CallBack_Ptr_MemoryFault();
+	}
+	
+}
+
+
